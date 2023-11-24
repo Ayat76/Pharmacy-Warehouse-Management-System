@@ -18,14 +18,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
  return $request->user();
 });
-//register and login
-
 Route::controller(RegisterController::class)->group(function(){
     Route::post('register', 'register');
     Route::post('login', 'login');
 });
-//route
-//route
 Route::middleware('auth:sanctum')->group( function () {
     Route::get('getMedicinesForClass',[RegisterController::class,'getMedicinesForClass']);
     Route::get('getClassifications',[RegisterController::class,'getClassifications']);
