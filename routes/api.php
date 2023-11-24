@@ -24,6 +24,8 @@ Route::controller(RegisterController::class)->group(function(){
     Route::post('register', 'register');
     Route::post('login', 'login');
 });
+//route
+//route
 Route::middleware('auth:sanctum')->group( function () {
     Route::get('getMedicinesForClass',[RegisterController::class,'getMedicinesForClass']);
     Route::get('getClassifications',[RegisterController::class,'getClassifications']);
@@ -32,4 +34,9 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('store',[\App\Http\Controllers\Web\WebMedicinesController::class,'store']);
 
 });
+<<<<<<< HEAD
 // ayatttttttt
+=======
+
+
+>>>>>>> loujain
