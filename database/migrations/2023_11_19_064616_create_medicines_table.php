@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('Commercial_name');
             $table->string('Manufacturer');
             $table->integer('Available_Quantity');
-            $table->integer('Expiry_date');
+            $table->string('Expiry_date');
             $table->integer('Price');
             $table->timestamps();
         });

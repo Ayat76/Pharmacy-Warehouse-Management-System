@@ -22,12 +22,13 @@ class WebMedicinesController extends Controller
             'Price'=>'required',
         ]);
         if($validator->fails()){
-            return "fails";
+            return response()->json($validator->errors(), 400);
         }
         $post=Medicine::create($request->all());
         if($post) {
-            return "data added successfully";
+            return response()->json(['message'=>'the medicine store'], 201);
         }
-        return "failed";
+        return response()->json(['message'=>'the medicine not store'], 400);
+
     }
 }

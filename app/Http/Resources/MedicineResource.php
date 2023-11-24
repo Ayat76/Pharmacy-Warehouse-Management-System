@@ -16,6 +16,7 @@ class MedicineResource extends JsonResource
     {
         return [
             'Commerical_name'=>$this->Commercial_name,
+            'id'=>$this->id,
             ];
     }
 }

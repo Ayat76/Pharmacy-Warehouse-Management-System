@@ -23,10 +23,11 @@ Route::controller(RegisterController::class)->group(function(){
     Route::post('login', 'login');
 });
 Route::middleware('auth:sanctum')->group( function () {
-    Route::get('getClass',[RegisterController::class,'getClass']);
+    Route::get('getMedicinesForClass',[RegisterController::class,'getMedicinesForClass']);
     Route::get('getClassifications',[RegisterController::class,'getClassifications']);
     Route::get('getMedicine',[RegisterController::class,'getMedicine']);
     Route::post('logout', [RegisterController::class,'logout']);
+    Route::post('store',[\App\Http\Controllers\Web\WebMedicinesController::class,'store']);
 
 });
 

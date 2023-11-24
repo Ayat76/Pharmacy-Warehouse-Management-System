@@ -24,14 +24,10 @@ $validator = Validator::make($request->all(), [
 'name' => 'required',
 'password' => 'required',
     'phone'=>'required',
-
-
 ]);
-
 if($validator->fails()){
 return $this->sendError('Validation Error.', $validator->errors());
 }
-
 $input = $request->all();
 $input['password'] = bcrypt($input['password']);
 $user = User::create($input);
@@ -70,7 +66,7 @@ public function login(Request $request): JsonResponse
     $classification=Classification::all();
     return response()->json($classification);
     }
-    public function getClass(Request $request){
+    public function getMedicinesForClass(Request $request){
         $medicines=MedicineResource::collection(Medicine::where('Classification_id',$request->Classification_id)->get());
         return response()->json($medicines);
     }
