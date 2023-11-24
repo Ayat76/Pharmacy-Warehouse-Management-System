@@ -30,3 +30,8 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('store',[\App\Http\Controllers\Web\WebMedicinesController::class,'store']);
 
 });
+<<<<<<< HEAD
+=======
+// ayatttttttt
+// meow
+>>>>>>> ayat
