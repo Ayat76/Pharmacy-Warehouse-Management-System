@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\RegisterController;
+use App\Http\Controllers\Web\WebMedicinesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,6 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('getClassifications',[RegisterController::class,'getClassifications']);
     Route::get('getMedicine',[RegisterController::class,'getMedicine']);
     Route::post('logout', [RegisterController::class,'logout']);
-    Route::post('store',[\App\Http\Controllers\Web\WebMedicinesController::class,'store']);
+    Route::post('store',[WebMedicinesController::class,'store']);
 
 });

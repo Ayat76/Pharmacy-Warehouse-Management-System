@@ -21,8 +21,8 @@ class RegisterController extends BaseController
 public function register(Request $request): JsonResponse
 {
 $validator = Validator::make($request->all(), [
-'name' => 'required',
-'password' => 'required',
+    'name' => 'required',
+    'password' => 'required',
     'phone'=>'required',
 ]);
 if($validator->fails()){
@@ -34,7 +34,7 @@ $user = User::create($input);
 $success['token'] =  $user->createToken('MyApp')->plainTextToken;
 $success['name'] =  $user->name;
 
-return $this->sendResponse($success, 'User register successfully.');
+return $this->sendResponse($success, 'register successfully.');
 }
 
 /**
@@ -49,7 +49,7 @@ public function login(Request $request): JsonResponse
         $success['token'] =  $authUser->createToken('MyApp')->plainTextToken;
         $success['name'] =  $authUser->name;
 
-        return $this->sendResponse($success, 'User signed in');
+        return $this->sendResponse($success, 'signed in');  // delete user
     }
     else{
         return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
@@ -62,16 +62,20 @@ public function login(Request $request): JsonResponse
             'message' => 'Logout Successful'
         ], 200);
     }
-    public function getClassifications(){
+    public function getClassifications(): JsonResponse
+    {
     $classification=Classification::all();
     return response()->json($classification);
     }
-    public function getMedicinesForClass(Request $request){
+    public function getMedicinesForClass(Request $request): JsonResponse
+    {
         $medicines=MedicineResource::collection(Medicine::where('Classification_id',$request->Classification_id)->get());
         return response()->json($medicines);
     }
-    public function getMedicine(Request $request){
+    public function getMedicine(Request $request): JsonResponse
+    {
         $medicine=Medicine::where('id',$request->id)->first();
         return response()->json($medicine);
+
     }
 }

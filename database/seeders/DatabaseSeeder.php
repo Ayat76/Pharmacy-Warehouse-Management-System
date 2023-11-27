@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ClassificationSeeder::class,
             MedicineSeeder::class,
+            AdminSeeder::class,
         ]);
     }
 }

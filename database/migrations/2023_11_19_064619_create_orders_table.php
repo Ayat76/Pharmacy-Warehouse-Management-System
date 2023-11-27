@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id')->foreign('Orders_Medicines.Orders_id');
             $table->integer('User_id')->index();
-            $table->string('Order_Status');
-            $table->string('Payment_Status');
+            $table->enum('Order_Status',['sent','received','pending']); //edite to enum
+            $table->enum('Payment_Status',['paid','unpaid']);
             $table->integer('final_price');
             $table->integer('Price_Medicine');
             $table->timestamps();
