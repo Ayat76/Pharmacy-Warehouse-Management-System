@@ -12,11 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders_medicines', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('Orders_id')->index();
-            $table->integer('Medicines_id')->index();
+            //$table->increments('id');
+            $table->id();
+            //$table->integer('Orders_id')->index();
+            $table->foreignId('Orders_id')->constrained('orders');
+            //$table->integer('Medicines_id')->index();
+            $table->foreignId('Medicines_id')->constrained('medicines');
             $table->integer('Required_quantity');
             $table->integer('quantity_price');
+            $table->integer('Price_Medicine');
             $table->timestamps();
         });
     }

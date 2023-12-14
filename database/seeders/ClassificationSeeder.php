@@ -13,7 +13,7 @@ class ClassificationSeeder extends Seeder
      */
     public function run(): void
     {
-        Classification::truncate();
+        //Classification::truncate();
         Classification::create([
             'classification'=>'Cardiac drugs'
         ]);

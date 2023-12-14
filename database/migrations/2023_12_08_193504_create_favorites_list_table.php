@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('classifications', function (Blueprint $table) {
-            $table->increments('id')->foreign('Medicines.Classification_id');
-            $table->string('classification');
+        Schema::create('favorites_list', function (Blueprint $table) {
+            $table->id();
+            //$table->integer('User_id')->index();
+            $table->foreignId('User_id')->constrained('users');
+            //$table->integer('Medicines_id')->index();
+            $table->foreignId('Medicines_id')->constrained('medicines');
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('classifications');
+        Schema::dropIfExists('favorites_list');
     }
 };

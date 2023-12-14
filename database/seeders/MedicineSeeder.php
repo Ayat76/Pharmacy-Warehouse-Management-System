@@ -12,7 +12,7 @@ class MedicineSeeder extends Seeder
      */
     public function run(): void
     {
-        Medicine::truncate();
+        //Medicine::truncate();
         Medicine::create([
             'Classification_id'=>2,
             'Scientific_name'=>'Furosemide',
