@@ -74,4 +74,5 @@ public function login(Request $request): JsonResponse
         $medicine=Medicine::where('id',$request->id)->first();
         return response()->json($medicine);
     }
+
 }
