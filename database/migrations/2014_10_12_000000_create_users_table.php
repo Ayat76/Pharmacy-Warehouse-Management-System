@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('phone')->unique();
-            $table->boolean('Is_Admin')->default(true);
-            $table->timestamp('email_verified_at')->nullable();
+            $table->bigInteger('phone')->unique();
+            $table->boolean('Is_Admin')->default(false);        //edit to false and delete email var
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

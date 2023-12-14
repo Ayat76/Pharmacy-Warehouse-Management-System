@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('medicines', function (Blueprint $table) {
-            $table->increments('id')->foreign('Favorites_List.Medicines_id');
-            $table->integer('Classification_id')->index();
+            //$table->increments('id')->foreign('Favorites_List.Medicines_id');
+            $table->id();
+            //$table->integer('Classification_id')->index();
+            $table->foreignId('Classification_id')->constrained('classifications');
             $table->string('Scientific_name');
             $table->string('Commercial_name');
             $table->string('Manufacturer');

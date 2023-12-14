@@ -26,4 +26,10 @@ class Medicine extends Model
     public function classifications(){
         return $this->belongsTo(Classification::class);
     }
+    public function orders_medicines(){
+        return $this->hasMany(Order_Medicines::class,'Medicines_id');
+    }
+    public function favorites_list(){
+        return $this->hasMany(Favorite_List::class);
+    }
 }

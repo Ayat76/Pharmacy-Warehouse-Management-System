@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('favorites_list', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('User_id')->index();
-            $table->integer('Medicines_id')->index();
+        Schema::create('classifications', function (Blueprint $table) {
+            // $table->increments('id')->foreign('Medicines.Classification_id');
+            $table->id();
+            $table->string('classification');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('favorites_list');
+        Schema::dropIfExists('classifications');
     }
 };

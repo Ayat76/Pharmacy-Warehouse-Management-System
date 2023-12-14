@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\API\RegisterController;
+use App\Http\Controllers\medicinesController;
+use App\Http\Controllers\Web\WebMedicinesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,20 +20,22 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
  return $request->user();
 });
-//register and login
 Route::controller(RegisterController::class)->group(function(){
     Route::post('register', 'register');
     Route::post('login', 'login');
 });
-//route
-//route
 Route::middleware('auth:sanctum')->group( function () {
-    Route::get('getMedicinesForClass',[RegisterController::class,'getMedicinesForClass']);
-    Route::get('getClassifications',[RegisterController::class,'getClassifications']);
-    Route::get('getMedicine',[RegisterController::class,'getMedicine']);
+    Route::get('showMedicinesForClass',[RegisterController::class,'getMedicinesForClass']);
+    Route::get('showClassifications',[RegisterController::class,'getClassifications']);
+    Route::get('showMedicine',[RegisterController::class,'getMedicine']);
     Route::post('logout', [RegisterController::class,'logout']);
-    Route::post('store',[\App\Http\Controllers\Web\WebMedicinesController::class,'store']);
+    Route::post('store',[WebMedicinesController::class,'store']);
+    Route::post('classSearch',[medicinesController::class,'classSearch']);
+    Route::post('medSearch',[medicinesController::class,'medSearch']);
+    Route::post('storeOrder',[medicinesController::class,'storeOrder']);
+    Route::get('showOrdersWeb',[medicinesController::class,'showOrdersWeb']);
+    Route::get('showOrdersPharma',[medicinesController::class,'showOrdersPharma']);
+    Route::get('showOneOrd',[medicinesController::class,'showOneOrd']);
+    Route::post('changeStatus',[medicinesController::class,'changeStatus']);
 
 });
-
-

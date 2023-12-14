@@ -15,8 +15,13 @@ class User extends Authenticatable
     public function orders(){
         return  $this->hasMany(Order::class,'User_id');
     }
+
     public function medicines(){
         return $this->belongsToMany(Medicine::class,'favorites_list');
+    }
+
+    public function favorites_list(){
+        return $this->hasMany(Favorite_List::class);
     }
 
 
