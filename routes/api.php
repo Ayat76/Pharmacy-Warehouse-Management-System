@@ -36,6 +36,5 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('showOrdersWeb',[medicinesController::class,'showOrdersWeb']);
     Route::get('showOrdersPharma',[medicinesController::class,'showOrdersPharma']);
     Route::get('showOneOrd',[medicinesController::class,'showOneOrd']);
-    Route::post('changeStatus',[medicinesController::class,'changeStatus']);
-    Route::post('changePayment',[medicinesController::class,'changePayment']);
+    Route::post('update',[medicinesController::class,'update']);
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\API\BaseController as BaseController;
 use App\Http\Resources\ClassSearchResource;
 use App\Http\Resources\showOrdersResource;
 use App\Http\Resources\showOrdsPhResource;
@@ -12,7 +13,7 @@ use App\Models\Order_Medicines;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class medicinesController extends Controller
+class medicinesController extends BaseController
 {
     public function classSearch(Request $request)
     {
@@ -38,93 +39,63 @@ class medicinesController extends Controller
     }
 
 
-//    public function storeOrder(Request $request)
-//    {
-//
-//        foreach($request->input('Orders_Medicines') as $order_medicine) {
-//            $medicine = Medicine::find($order_medicine['Medicines_id']);
-//            if ($medicine->Available_Quantity < $order_medicine['Required_quantity']) {
-//                return "the quantity of medicine {$medicine->Commercial_name} excedds the available quantity";
-//            }
-//        }
-//        $order= Order::create([
-//            'User_id'=>auth()->user()->id,
-//        ]);
-//
-//        foreach($request->input('Orders_Medicines') as $order_medicine) {
-//            $medicine = Medicine::find($order_medicine['Medicines_id']);
-//            $price = Medicine::where('id',$order_medicine['Medicines_id'])->first()->Price;
-//            Order_Medicines::create([
-//                'Orders_id'=>$order->id,
-//                'Medicines_id'=>$order_medicine['Medicines_id'],
-//                'Required_quantity'=>$order_medicine['Required_quantity'],
-//                'Price_Medicine'=>$price,
-//                'quantity_price'=>($order_medicine['Required_quantity'])*$price,
-//
-//            ]);
-//
-//        }
-//        return response()->json("order is done ", 200);
-//    }
-//    public function  update(Request $request){
-//        $order=Order_Medicines::where('Orders_id',$request->id)->get();
-//        $ordered=Order::where('id',$request->id)->get();
-//        if($request->Order_Status=='sent'){
-//             foreach($order as $medicineOrder){
-//                 $medicine=Medicine::find($medicineOrder->Medicines_id);
-//                 $medicine->update(['Available_Quantity'=> $medicine->Available_Quantity - $medicineOrder->Required_quantity]);
-//             }
-//        }
-//    }
-//
-//
-
-        public function storeOrder(Request $request)
+    public function storeOrder(Request $request)
     {
-        $medsOrder = $request->meds;
-        $userOrder = $request->User_id;
-        $validator = validator::make($request->all(), [
-            'User_id' => 'required|exists:users,id',
-            //'meds.*.Required_quantity' => 'required|numeric|lte:meds.*.Available_Quantity',
-        ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+        foreach($request->input('Orders_Medicines') as $order_medicine) {
+            $medicine = Medicine::find($order_medicine['Medicines_id']);
+            if ($medicine->Available_Quantity < $order_medicine['Required_quantity']) {
+                $medicineC['medicine']=$medicine->Commercial_name;
+                $medicineC['Available_Quantity']=$medicine->Available_Quantity;
+                $medicineC['Required_quantity']= $order_medicine['Required_quantity'];
+                return $this->sendError('the quantity of medicine excedds',$medicineC);
+            }
         }
-
-        $Us_id = Order::create([
-            'User_id'=>$userOrder,
+        $order= Order::create([
+            'User_id'=>auth()->user()->id,
         ]);
-        $Us_id->save();
 
-        // Validate the request data
-        // $request->validate([
-        // 'User_id' => 'required|exists:users,id',
-        //'item_count' => 'required|numeric|min:1',
-        //'grand_total' => 'required|numeric|min:0',
-        //'medicines' => 'required|array',
-        //  'medicines.*.id' => 'required|exists:medicines,id',
-        //  'medicines.*.quantity' => 'required|numeric|min:1',
-        //  'medicines.*.price' => 'required|numeric|min:0',
-        //]);
+        foreach($request->input('Orders_Medicines') as $order_medicine) {
+            $medicine = Medicine::find($order_medicine['Medicines_id']);
+            $price = Medicine::where('id',$order_medicine['Medicines_id'])->first()->Price;
+            Order_Medicines::create([
+                'Orders_id'=>$order->id,
+                'Medicines_id'=>$order_medicine['Medicines_id'],
+                'Required_quantity'=>$order_medicine['Required_quantity'],
+                'Price_Medicine'=>$price,
+                'quantity_price'=>($order_medicine['Required_quantity'])*$price,
 
-
-
-        // Loop through the medicines array and create order medicine objects
-        foreach ($medsOrder as $medicine) {
-
-            $medCreateOrder = Order_Medicines::create([
-                'Orders_id'=>$Us_id->id,
-                'Medicines_id'=>$medicine['Medicines_id'],
-                'Required_quantity'=>$medicine['Required_quantity'],
-                'Price_Medicine'=>$medicine['Price_Medicine'],
-                'quantity_price'=>$medicine['Price_Medicine'] * $medicine['Required_quantity'],
             ]);
-            $medCreateOrder->save();
-        }
 
+        }
         return response()->json([
-            'message' => 'Ordered Successful'
+           'message' => 'Ordered Successful'
+        ], 200);
+    }
+    public function  update(Request $request){
+        $order=Order_Medicines::where('Orders_id',$request->id)->get();
+        $ord=Order::where('id',$request->id)->first();
+        Order::where('id',$request->id)->update([
+            'Order_Status'=>$request->Order_Status,
+            'Payment_Status'=>$request->Payment_Status
+        ]);
+        foreach($order as $medicineOr){
+            $medicine=Medicine::find($medicineOr->Medicines_id);
+            if ($medicine->Available_Quantity < $medicineOr->Required_quantity) {
+                $medicineC['medicine']=$medicine->Commercial_name;
+                $medicineC['Available_Quantity']=$medicine->Available_Quantity;
+                $medicineC['Required_quantity']= $medicineOr->Required_quantity;
+            return $this->sendError('the quantity of medicine excedds ',$medicineC);
+            }
+        }
+        if($request->Order_Status=='sent'  && $ord->Order_Status!='sent' ){
+             foreach($order as $medicineOrder){
+                 $medicine=Medicine::find($medicineOrder->Medicines_id);
+                 $medicine->update(['Available_Quantity'=> $medicine->Available_Quantity - $medicineOrder->Required_quantity]);
+             }
+        }
+        return response()->json([
+            'message' => 'Update  Successful'
         ], 200);
     }
 
@@ -142,27 +113,6 @@ class medicinesController extends Controller
     public function showOneOrd(Request $request) {
         $showOne = Order_Medicines::where('Orders_id',$request->Orders_id)->get();
         return response()->json($showOne);
-    }
-
-    public function changeStatus(Request $request) {
-        $orderSt = $request->orderSt;
-        $upSt = Order::where('id',$request->id)->where('User_id',$request->User_id)->update([
-            'Order_Status'=>$orderSt,
-        ]);
-
-        return response()->json([
-            'message' => 'Status Change Successful'
-        ], 200);
-    }
-
-    public function changePayment(Request $request) {
-        $paySt = $request->paySt;
-        $upSt = Order::where('id',$request->id)->where('User_id',$request->User_id)->update([
-            'Payment_Status'=>$paySt,
-        ]);
-        return response()->json([
-            'message' => 'Payment Status Change Successful'
-        ], 200);
     }
 
 }
