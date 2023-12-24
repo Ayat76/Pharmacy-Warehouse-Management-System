@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->bigInteger('phone')->unique();
-            $table->boolean('Is_Admin')->default(false);        //edit to false and delete email var
+            $table->boolean('Is_Admin')->default(false);
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

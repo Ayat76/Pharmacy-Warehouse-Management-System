@@ -36,7 +36,6 @@ $input['password'] = bcrypt($input['password']);
 $user = User::create($input);
 $success['token'] =  $user->createToken('MyApp')->plainTextToken;
 $success['name'] =  $user->name;
-
 return $this->sendResponse($success, 'Register successful.');
 }
 

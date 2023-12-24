@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('Scientific_name');
             $table->string('Commercial_name');
             $table->string('Manufacturer');
-            $table->integer('Available_Quantity');
+            $table->bigInteger('Available_Quantity');
             $table->string('Expiry_date');
-            $table->integer('Price');
+            $table->bigInteger('Price');
             $table->timestamps();
         });
     }
