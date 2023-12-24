@@ -18,9 +18,9 @@ return new class extends Migration
             $table->foreignId('Orders_id')->constrained('orders');
             //$table->integer('Medicines_id')->index();
             $table->foreignId('Medicines_id')->constrained('medicines');
-            $table->integer('Required_quantity');
-            $table->integer('quantity_price');
-            $table->integer('Price_Medicine');
+            $table->bigInteger('Required_quantity');
+            $table->bigInteger('quantity_price');
+            $table->bigInteger('Price_Medicine');
             $table->timestamps();
         });
     }

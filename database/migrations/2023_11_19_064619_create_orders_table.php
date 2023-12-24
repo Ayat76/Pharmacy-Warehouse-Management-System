@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            //$table->integer('User_id')->index();
             $table->foreignId('User_id')->constrained('users');
-            $table->enum('Order_Status',['sent','received','pending'])->default('sent');
-            $table->enum('Payment_Status',['paid','unpaid'])->default('Unpaid');
-            $table->integer('final_price')->default(0);
+            $table->enum('Order_Status',['sent','received','pending'])->default('pending');
+            $table->enum('Payment_Status',['paid','unpaid'])->default('unpaid');
+            $table->bigInteger('final_price')->default(0);
             $table->timestamps();
         });
     }

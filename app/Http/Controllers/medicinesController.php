@@ -37,13 +37,59 @@ class medicinesController extends Controller
         }
     }
 
+
     public function storeOrder(Request $request)
     {
+        $medsOrder = $request->meds;
+        $userOrder = $request->User_id;
+        $validator = validator::make($request->all(), [
+            'User_id' => 'required|exists:users,id',
+            //'meds.*.Required_quantity' => 'required|numeric|lte:meds.*.Available_Quantity',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $Us_id = Order::create([
+            'User_id'=>$userOrder,
+        ]);
+        $Us_id->save();
+
+        // Validate the request data
+        // $request->validate([
+        // 'User_id' => 'required|exists:users,id',
+        //'item_count' => 'required|numeric|min:1',
+        //'grand_total' => 'required|numeric|min:0',
+        //'medicines' => 'required|array',
+        //  'medicines.*.id' => 'required|exists:medicines,id',
+        //  'medicines.*.quantity' => 'required|numeric|min:1',
+        //  'medicines.*.price' => 'required|numeric|min:0',
+        //]);
+
+
+
+        // Loop through the medicines array and create order medicine objects
+        foreach ($medsOrder as $medicine) {
+
+            $medCreateOrder = Order_Medicines::create([
+                'Orders_id'=>$Us_id->id,
+                'Medicines_id'=>$medicine['Medicines_id'],
+                'Required_quantity'=>$medicine['Required_quantity'],
+                'Price_Medicine'=>$medicine['Price_Medicine'],
+                'quantity_price'=>$medicine['Price_Medicine'] * $medicine['Required_quantity'],
+            ]);
+            $medCreateOrder->save();
+        }
+
+        return response()->json([
+            'message' => 'Ordered Successful'
+        ], 200);
     }
 
     public function showOrdersPharma(Request $request) {
-        $showOrds = showOrdsPhResource::collection(Order::all());
+        $user = auth()->user()->id;
+        $showOrds = showOrdsPhResource::collection(Order::where('User_id',$user)->get());
         return response()->json($showOrds);
     }
 
@@ -58,12 +104,24 @@ class medicinesController extends Controller
     }
 
     public function changeStatus(Request $request) {
-
-
+        $orderSt = $request->orderSt;
+        $upSt = Order::where('id',$request->id)->where('User_id',$request->User_id)->update([
+            'Order_Status'=>$orderSt,
+        ]);
+        
+        return response()->json([
+            'message' => 'Status Change Successful'
+        ], 200);
     }
 
     public function changePayment(Request $request) {
-
+        $paySt = $request->paySt;
+        $upSt = Order::where('id',$request->id)->where('User_id',$request->User_id)->update([
+            'Payment_Status'=>$paySt,
+        ]);
+        return response()->json([
+            'message' => 'Payment Status Change Successful'
+        ], 200);
     }
 
 }
