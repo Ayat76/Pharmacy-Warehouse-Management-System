@@ -17,9 +17,9 @@ class medicinesController extends BaseController
 {
     public function classSearch(Request $request)
     {
-
+        $class=Classification::where('id',$request->Classification_id)->first();
+        if($class){
         $classification_id = ClassSearchResource::collection(Medicine::where('Classification_id', $request->Classification_id)->get());
-        if ($classification_id) {
             return response()->json($classification_id);
         } else {
             return response()->json("classification not found", 404);
