@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Http\Resources\ClassSearchResource;
+use App\Http\Resources\favoriteResource;
 use App\Http\Resources\showOrdersResource;
 use App\Http\Resources\showOrdsPhResource;
 use App\Models\Classification;
+use App\Models\Favorite_List;
 use App\Models\Medicine;
 use App\Models\Order;
 use App\Models\Order_Medicines;
@@ -143,9 +145,14 @@ class medicinesController extends BaseController
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
-
+            $order=Order_Medicines::where('Orders_id',$request->id)->get();
+            $p=0;
+            foreach($order as $result){
+                $p+=$result['quantity_price'];
+            }
         Order::where('id',$request->id)->update([
-            'Payment_Status'=>$request->Payment_Status
+            'Payment_Status'=>$request->Payment_Status,
+            'final_price'=>$p,
         ]);
 
         return response()->json([
@@ -184,5 +191,43 @@ class medicinesController extends BaseController
         Order::where('id',$request->id)->delete();
         return response()->json("Order Delete Successfully");
     }
+
+
+    public function favoritmed(Request $request){
+        $user = auth()->user()->id;
+
+        if(Favorite_List::where('User_id',$user)->where('Medicines_id',$request->Medicines_id)->first()){
+            return response()->json([
+                'message' => 'Previously saved to Favorites'
+            ], 200);
+        }
+        else{
+            Favorite_List::create(['User_id'=>$user,'Medicines_id'=>$request->Medicines_id]);
+            return response()->json([
+                'message' => 'Saved to favorites'
+            ], 200);
+        }
+    }
+    public function getfavoritemed(){
+        $user = auth()->user()->id;
+        $favorite= favoriteResource::collection(Favorite_List::where('User_id',$user)->get());
+        return response()->json($favorite, 200);
+
+    }
+    //هاد التقرير بالمستودع
+    public function orderReport(Request $request){
+        $orders=Order_Medicines::where('created_at', '>=',$request->date)->get();
+        return response()->json($orders);
+    }
+    public function medicineReport(Request $request){
+        $orders=Order_Medicines::select('Medicines_id')
+            ->selectRaw('count(Medicines_id) as Duplicate')
+            ->groupBy('Medicines_id')
+            ->orderBy('Duplicate')
+            ->having('Duplicate', '>=', 1)
+            ->get();
+        return response()->json($orders);
+    }
+
 
 }
