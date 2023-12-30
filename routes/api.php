@@ -39,6 +39,9 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('deleteOrder',[medicinesController::class,'deleteOrder']);
     Route::post('updateOrderSt',[medicinesController::class,'updateOrderSt']);
     Route::post('updatePaymentSt',[medicinesController::class,'updatePaymentSt']);
-
+    Route::post('favoritmed',[medicinesController::class,'favoritmed']);
+    Route::get('getfavoritemed',[medicinesController::class,'getfavoritemed']);
+    Route::post('orderReport',[medicinesController::class,'orderReport']);
+    Route::get('medicineReport',[medicinesController::class,'medicineReport']);
 
 });
