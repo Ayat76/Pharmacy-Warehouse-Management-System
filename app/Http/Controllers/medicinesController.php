@@ -175,7 +175,7 @@ class medicinesController extends BaseController
 
     }
 
-    public function showOneOrd(Request $request) {              //there are some problems here
+    public function showOneOrd(Request $request) {              //there are some problems here/Iam the Problem
         $showOnes = Order_Medicines::where('Orders_id', $request->Orders_id)->get();
         return response()->json($showOnes);
     }
