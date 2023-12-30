@@ -15,9 +15,9 @@ return new class extends Migration
             //$table->increments('id');
             $table->id();
             //$table->integer('Orders_id')->index();
-            $table->foreignId('Orders_id')->constrained('orders');
+            $table->foreignId('Orders_id')->constrained('orders')->cascadeOnDelete()->cascadeOnUpdate();
             //$table->integer('Medicines_id')->index();
-            $table->foreignId('Medicines_id')->constrained('medicines');
+            $table->foreignId('Medicines_id')->constrained('medicines')->cascadeOnDelete()->cascadeOnUpdate();
             $table->bigInteger('Required_quantity');
             $table->bigInteger('quantity_price');
             $table->bigInteger('Price_Medicine');

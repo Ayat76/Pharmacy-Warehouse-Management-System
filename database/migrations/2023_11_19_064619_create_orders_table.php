@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('User_id')->constrained('users');
-            $table->enum('Order_Status',['sent','received','pending'])->default('pending');
+            $table->enum('Order_Status',['sent','received','pending'])->default('received');
             $table->enum('Payment_Status',['paid','unpaid'])->default('unpaid');
             $table->bigInteger('final_price')->default(0);
             $table->timestamps();

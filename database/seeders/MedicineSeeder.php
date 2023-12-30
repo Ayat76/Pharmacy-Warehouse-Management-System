@@ -4,6 +4,8 @@ namespace Database\Seeders;
 use App\Models\Medicine;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
 
 class MedicineSeeder extends Seeder
 {
@@ -13,6 +15,25 @@ class MedicineSeeder extends Seeder
     public function run(): void
     {
         //Medicine::truncate();
+
+        $filePath = 'storage/app/myfile/Medicines.json';
+        $fileContact = file_get_contents($filePath);
+        $medicines = json_decode($fileContact,true);
+       // $json = Storage::get("C:\Users\ASUS\Downloads\Medicines.json");
+       // $medicines = json_decode($json);
+
+        foreach ($medicines as $medicine) {
+            Medicine::create([
+                "Classification_id" => $medicine['Classification_id'],
+                "Scientific_name" => $medicine['Scientific_name'],
+                "Commercial_name" => $medicine['Commercial_name'],
+                "Manufacturer" => $medicine['Manufacturer'],
+                "Available_Quantity" => $medicine['Available_Quantity'],
+                "Expiry_date" => $medicine['Expiry_date'],
+                "Price" => $medicine['Price']
+            ]);
+        }
+        /*
         Medicine::create([
             'Classification_id'=>2,
             'Scientific_name'=>'Furosemide',
@@ -85,5 +106,6 @@ class MedicineSeeder extends Seeder
             'Expiry_date'=>'12/11/2025',
             'Price'=>50,
         ]);
+        */
     }
 }

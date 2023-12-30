@@ -15,11 +15,18 @@ class ClassificationSeeder extends Seeder
     {
         //Classification::truncate();
         Classification::create([
-            'classification'=>'Cardiac drugs'
+            'classification'=>'Gastroenterlogical'
         ]);
         Classification::create([
-            'classification'=>'Kidney drugs'
+            'classification'=>'Respiratory'
         ]);
+        Classification::create([
+            'classification'=>'Neurological'
+        ]);
+        Classification::create([
+            'classification'=>'Ophthalmology'
+        ]);
+
 
     }
 }
