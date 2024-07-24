@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Http\Resources\ClassSearchResource;
 use App\Http\Resources\favoriteResource;
+use App\Http\Resources\notificationResource;
 use App\Http\Resources\showOrdersResource;
 use App\Http\Resources\showOrdsPhResource;
 use App\Models\Classification;
@@ -47,17 +48,14 @@ class medicinesController extends BaseController
     public function storeOrder(Request $request)
     {
 
+
+
         $orders = $request->all();
 
         foreach($orders as $order_medicine) {
 
             $medicine = Medicine::find($order_medicine['Medicines_id']);
-            if ($medicine->Available_Quantity < $order_medicine['Required_quantity']) {
-                $medicineC['medicine']=$medicine->Commercial_name;
-                $medicineC['Available_Quantity']=$medicine->Available_Quantity;
-                $medicineC['Required_quantity']= $order_medicine['Required_quantity'];
-                return $this->sendError('the quantity of medicine exceeds',$medicineC);
-            }
+
         }
         $order= Order::create([
             'User_id'=>auth()->user()->id,
@@ -76,6 +74,8 @@ class medicinesController extends BaseController
 
             ]);
         }
+
+
 
         $user = User::find(1);
         $userOrder = auth()->user()->id;
@@ -137,8 +137,9 @@ class medicinesController extends BaseController
 
     public function  updatePaymentSt(Request $request){
         if(auth()->user()->Is_Admin) {
-
+            $user_id = $request->user_id;
             $validator = Validator::make($request->all(), [
+                'user_id' =>'required',
             'id' => 'required',
             'Payment_Status'=>'required|in:paid,unpaid',
         ]);
@@ -150,7 +151,7 @@ class medicinesController extends BaseController
             foreach($order as $result){
                 $p+=$result['quantity_price'];
             }
-        Order::where('id',$request->id)->update([
+        Order::where('id',$request->id)->where('user_id',$user_id)->update([
             'Payment_Status'=>$request->Payment_Status,
             'final_price'=>$p,
         ]);
@@ -215,19 +216,40 @@ class medicinesController extends BaseController
 
     }
     //هاد التقرير بالمستودع
+
     public function orderReport(Request $request){
-        $orders=Order_Medicines::where('created_at', '>=',$request->date)->get();
-        return response()->json($orders);
-    }
-    public function medicineReport(Request $request){
-        $orders=Order_Medicines::select('Medicines_id')
-            ->selectRaw('count(Medicines_id) as Duplicate')
-            ->groupBy('Medicines_id')
-            ->orderBy('Duplicate')
-            ->having('Duplicate', '>=', 1)
-            ->get();
+        $sixMonthsAgo = now()->subMonths(6);
+        $orders=Order_Medicines::where('created_at', '>=',$sixMonthsAgo)->get();
         return response()->json($orders);
     }
 
+
+
+    public function medicineReport(Request $request){
+        // get the date of one month ago
+        $oneMonthAgo = now()->subMonth();
+        $orders=Order_Medicines::select('Medicines_id')
+            ->selectRaw('count(Medicines_id) as Duplicate')
+            ->groupBy('Medicines_id')
+            ->orderBy('Duplicate','desc')
+            ->having('Duplicate', '>=', 1)
+            ->whereDate('created_at', '>', $oneMonthAgo) // filter by date
+            ->first();
+            $max_id = $orders->Medicines_id;
+            $name_med = Medicine::where('id',$max_id)->first();
+            $result =  $name_med->Commercial_name;
+            return response()->json($result);
+    }
+
+    public function showNotWeb(Request $request) {
+        $notifications = notificationResource::collection(\App\Models\Notification::where('notifiable_id',1)->get());
+        return response()->json($notifications,200);
+    }
+
+    public function showNotPharma(Request $request) {
+        $user = auth()->user()->id;
+        $notifications = notificationResource::collection(\App\Models\Notification::where('notifiable_id',$user)->get());
+        return response()->json($notifications,200);
+    }
 
 }

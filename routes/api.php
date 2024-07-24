@@ -35,13 +35,17 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('storeOrder',[medicinesController::class,'storeOrder']);
     Route::get('showOrdersWeb',[medicinesController::class,'showOrdersWeb']);
     Route::get('showOrdersPharma',[medicinesController::class,'showOrdersPharma']);
-    Route::post('showOneOrd',[medicinesController::class,'showOneOrd']);
+    Route::get('showOneOrd',[medicinesController::class,'showOneOrd']);
     Route::post('deleteOrder',[medicinesController::class,'deleteOrder']);
     Route::post('updateOrderSt',[medicinesController::class,'updateOrderSt']);
     Route::post('updatePaymentSt',[medicinesController::class,'updatePaymentSt']);
     Route::post('favoritmed',[medicinesController::class,'favoritmed']);
     Route::get('getfavoritemed',[medicinesController::class,'getfavoritemed']);
-    Route::post('orderReport',[medicinesController::class,'orderReport']);
+    Route::get('orderReport',[medicinesController::class,'orderReport']);
     Route::get('medicineReport',[medicinesController::class,'medicineReport']);
+    Route::get('showNotWeb',[medicinesController::class,'showNotWeb']);
+    Route::get('showNotPharma',[medicinesController::class,'showNotPharma']);
+
+
 
 });

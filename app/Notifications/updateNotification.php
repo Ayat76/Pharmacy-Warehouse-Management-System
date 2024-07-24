@@ -16,6 +16,7 @@ class updateNotification extends Notification
     /**
      * Create a new notification instance.
      */
+
     public function __construct($message)
     {
         $this->message = $message;
